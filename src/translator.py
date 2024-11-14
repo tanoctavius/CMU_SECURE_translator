@@ -1,3 +1,43 @@
+# Import necessary libraries
+from openai import AzureOpenAI
+from sentence_transformers import SentenceTransformer, util
+from typing import Callable
+import ast
+import ipytest
+import pytest
+from unittest.mock import patch
+import unittest
+
+from openai import AzureOpenAI
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Loads environment variables from .env
+api_key = os.getenv("API_KEY")
+
+# Initialize the Azure OpenAI client
+client = AzureOpenAI(
+    api_key=api_key,
+    api_version="2024-02-15-preview",
+    azure_endpoint="https://project-4.openai.azure.com/"
+)
+
+print("Hello we are about to get response from client")
+
+# Make a request to your Azure OpenAI model
+response = client.chat.completions.create(
+    model="gpt-4o-mini",  # This should match your deployment name in Azure
+    messages=[
+        {
+            "role": "user",
+            "content": "What is the future of artificial intelligence?"
+        }
+    ]
+)
+
+# Print the response
+print(response.choices[0].message.content)
+
 def translate_content(content: str) -> tuple[bool, str]:
     if content == "这是一条中文消息":
         return False, "This is a Chinese message"
