@@ -13,8 +13,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env: 
-      API_KEY: ${{ secrets.API_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -67,4 +65,6 @@ jobs:
           app-name: 'Translator-CMU-SECURE'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DA9E7E65703949AE875984D9B81D2FAE }}
+        env: 
+          API_KEY: ${{ secrets.API_KEY }}
         
