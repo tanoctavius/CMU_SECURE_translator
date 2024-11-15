@@ -1,4 +1,5 @@
 # Import necessary libraries
+import os
 from openai import AzureOpenAI
 from sentence_transformers import SentenceTransformer, util
 from typing import Callable
@@ -7,10 +8,8 @@ import ipytest
 import pytest
 from unittest.mock import patch
 import unittest
-
-from openai import AzureOpenAI
 from dotenv import load_dotenv
-import os
+
 
 load_dotenv()  # Loads environment variables from .env
 api_key = os.getenv("API_KEY")
