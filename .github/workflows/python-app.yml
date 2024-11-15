@@ -11,6 +11,7 @@ on:
 
 env: 
   API_KEY: ${{ secrets.API_KEY }}
+  AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
 
 permissions:
   contents: read
