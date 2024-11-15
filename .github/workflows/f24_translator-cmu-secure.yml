@@ -12,6 +12,7 @@ on:
 
 env: 
   API_KEY: ${{ secrets.API_KEY }}
+  AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
 
 jobs:
   build:
@@ -32,6 +33,16 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+        
+      - name: Install sentence transformers
+        run: pip install -U sentence-transformers
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U sentence-transformers
+          pip install flake8 pytest openai python-dotenv
 
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       - name: Zip artifact for deployment
