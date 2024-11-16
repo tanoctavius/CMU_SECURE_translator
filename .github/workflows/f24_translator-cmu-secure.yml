@@ -71,5 +71,3 @@ jobs:
           app-name: 'Translator-CMU-SECURE'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DA9E7E65703949AE875984D9B81D2FAE }}
-        
-        
