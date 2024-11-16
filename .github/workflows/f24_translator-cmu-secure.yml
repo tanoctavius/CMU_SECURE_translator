@@ -68,7 +68,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'translator-service-sweepers'
+          app-name: 'Translator-CMU-SECURE'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DA9E7E65703949AE875984D9B81D2FAE }}
         
