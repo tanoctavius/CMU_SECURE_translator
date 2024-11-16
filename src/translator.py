@@ -1,19 +1,19 @@
 import os
 from openai import AzureOpenAI
 
+env_api_key = os.environ.get('API_KEY')
+
+if not env_api_key:
+    raise ValueError("Environment variable API_KEY is not set.")
 
 client = AzureOpenAI(
     api_key=os.getenv("API_KEY"),
     api_version="2024-02-15-preview",
-    azure_endpoint=os.getenv("AZURE_ENDPOINT")
+    azure_endpoint="https://project-4.openai.azure.com/"
 )
 
-def get_translation(content: str) -> str:
-    """
-    Translates non-English text to English using the Azure OpenAI GPT-4 model.
-    If the language is unrecognized, returns a message indicating so.
-    """
-    context = "Translate this query from non-English into English. If you do not recognize the language, tell me 'I don't recognize this language'."
+def get_translation(post: str) -> str:
+    context = "You are a helpful assistant specialized in translating text. Translate the following text to English."
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -23,19 +23,14 @@ def get_translation(content: str) -> str:
             },
             {
                 "role": "user",
-                "content": content
+                "content": post
             }
         ]
     )
     return response.choices[0].message.content
 
-def get_language(content: str) -> str:
-    """
-    Determines the language of the given text using the Azure OpenAI GPT-4 model.
-    Returns the language name as a string.
-    If the text is in an English dialect, returns 'English'.
-    """
-    context = "Determine what language this query is written in with one word. If it is an English-dialect, tell me 'English'."
+def get_language(post: str) -> str:
+    context = "You are an assistant that identifies the language of the provided text. Specify the language of the following text. Answer in 1 word, with just the name of the language (use the English name)."
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -45,40 +40,33 @@ def get_language(content: str) -> str:
             },
             {
                 "role": "user",
-                "content": content
+                "content": post
             }
         ]
     )
     return response.choices[0].message.content
+
 
 def translate_content(content: str) -> tuple[bool, str]:
-    """
-    Determines if the content is in English and translates it to English if it's not.
-    Handles unexpected model responses gracefully.
-    Returns a tuple: (is_english: bool, translated_content: str)
-    """
-
     try:
-        language = get_language(content)
-        if not isinstance(language, str) or not language.strip():
-            raise ValueError("Invalid language response.")
-        if language.lower() == "english":
+        detected_language = get_language(content)
+
+        # Check if detected language is in the expected format (a single word)
+        if not isinstance(detected_language, str) or " " in detected_language.strip():
+            raise ValueError("Unexpected language output format: Expected a single word.")
+
+        if detected_language.lower() == "english":
             return (True, content)
-        else:
-            translation = get_translation(content)
-            # Check for invalid translation responses
-            invalid_responses = [
-                "I don't understand your request.",
-                "I don't know.",
-                "Translation unavailable.",
-                "I don't recognize this language."
-                # Add other phrases as needed
-            ]
-            if not isinstance(translation, str) or translation.strip() in invalid_responses or not translation.strip():
-                raise ValueError("Invalid translation response.")
-            return (False, translation)
+
+        translated_text = get_translation(content)
+
+        # Verify translation output format (should be a non-empty string)
+        if not isinstance(translated_text, str) or len(translated_text.strip()) == 0:
+            raise ValueError("Unexpected translation output format: Expected non-empty text.")
+
+        return (False, translated_text)
+
     except Exception as e:
-        # Log the error for debugging
-        print(f"Error processing content: {e}")
-        # Return default values to allow NodeBB to handle gracefully
-        return (False, "Translation unavailable.")
+        # Log the error and respond with a safe fallback to avoid breaking NodeBB
+        print(f"Error in LLM response handling: {e}")
+        return (True, "Sorry, translation is temporarily unavailable.")
