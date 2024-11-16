@@ -13,9 +13,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     env:
       API_KEY: ${{ secrets.API_KEY }}
-      AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
 
     steps:
       - uses: actions/checkout@v4
@@ -31,20 +31,15 @@ jobs:
           source venv/bin/activate
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Install sentence transformers
-        run: pip install -U sentence-transformers
+        run: |
+          pip install -r requirements.txt
 
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
-      - name: Run the test suite
-        run: pytest
-
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: python-app
           path: |
@@ -57,10 +52,12 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: python-app
 
@@ -71,7 +68,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'translate-d-buggers'
+          app-name: 'translator-service-sweepers'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DA9E7E65703949AE875984D9B81D2FAE }}
         
