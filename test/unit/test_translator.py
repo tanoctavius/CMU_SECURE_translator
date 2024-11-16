@@ -1,62 +1,61 @@
 from src.translator import translate_content
-# comment
 
 def test_german():
-    is_english, translated_content = translate_content("Hier ist dein erstes Beispiel.")
+    is_english, translated_content = translate_content("Willkommen in unserem neuen System.")
     assert is_english == False
-    assert translated_content == "Here is your first example."
+    assert translated_content == "Welcome to our new system."
 
 def test_french():
-    is_english, translated_content = translate_content("Aujourd'hui, il fait très beau.")
+    is_english, translated_content = translate_content("Je suis ravi de vous rencontrer aujourd'hui.")
     assert is_english == False
-    assert translated_content == "Today, the weather is very nice."
+    assert translated_content == "I am delighted to meet you today."
 
 def test_czech():
-    is_english, translated_content = translate_content("С днём рождения! Желаю тебе счастья, здоровья, успехов в работе и семейного благополучия. Пусть твои мечты сбываются, и каждый новый день приносит радость и вдохновение.")
+    is_english, translated_content = translate_content("Děkujeme za váš zájem o náš produkt.")
     assert is_english == False
-    assert translated_content == "Happy birthday! I wish you happiness, health, success at work, and family well-being. May your dreams come true, and may each new day bring joy and inspiration."
+    assert translated_content == "Thank you for your interest in our product."
 
 def test_japanese():
-    is_english, translated_content = translate_content("今日は晴れて、気持ちの良い天気です。友達と一緒に公園でピクニックをする予定です。")
+    is_english, translated_content = translate_content("新しいプロジェクトについて話したいと思います。")
     assert is_english == False
-    assert translated_content == "Today is sunny and the weather feels great. I plan to have a picnic in the park with friends."
+    assert translated_content == "I would like to talk about the new project."
 
 def test_portuguese():
-    is_english, translated_content = translate_content("A educação é um direito fundamental de todos, e garantir que todas as crianças tenham acesso a uma educação de qualidade é essencial para o futuro da sociedade.")
+    is_english, translated_content = translate_content("Vamos trabalhar juntos para alcançar nossos objetivos.")
     assert is_english == False
-    assert translated_content == "Education is a fundamental right for everyone, and ensuring that all children have access to quality education is essential for the future of society."
+    assert translated_content == "Let's work together to achieve our goals."
 
 def test_italian():
-    is_english, translated_content = translate_content("Vorrei ringraziarti per tutto l'aiuto che mi hai offerto durante questi mesi difficili. Non avrei potuto farcela senza il tuo sostegno costante.")
+    is_english, translated_content = translate_content("La riunione si terrà domani alle 10 del mattino.")
     assert is_english == False
-    assert translated_content == "I would like to thank you for all the help you have given me during these difficult months. I couldn't have made it without your constant support."
+    assert translated_content == "The meeting will be held tomorrow at 10 AM."
 
 def test_chinese():
-    is_english, translated_content = translate_content("这是你完成任务后的奖励。")
+    is_english, translated_content = translate_content("这个决定对我们的未来非常重要。")
     assert is_english == False
-    assert translated_content == "This is your reward for completing the task."
+    assert translated_content == "This decision is very important for our future."
 
 def test_spanish():
-    is_english, translated_content = translate_content("¿Cómo estás? Espero que estés bien.")
+    is_english, translated_content = translate_content("Espero que podamos colaborar en este proyecto pronto.")
     assert is_english == False
-    assert translated_content == "How are you? I hope you are well."
+    assert translated_content == "I hope we can collaborate on this project soon."
 
 def test_spanish_2():
-    is_english, translated_content = translate_content("Este proyecto tiene un gran potencial para cambiar la forma en que abordamos la sostenibilidad en nuestras comunidades, y espero que podamos trabajar juntos para llevarlo adelante.")
+    is_english, translated_content = translate_content("Trabajemos juntos para resolver este problema lo antes posible.")
     assert is_english == False
-    assert translated_content == "This project has great potential to change how we approach sustainability in our communities, and I hope we can work together to move it forward."
+    assert translated_content == "Let's work together to solve this problem as soon as possible."
 
 def test_french_2():
-    is_english, translated_content = translate_content("Il y a des moments dans la vie où il est important de faire une pause et de réfléchir aux choix que nous avons faits et aux directions que nous voulons prendre.")
+    is_english, translated_content = translate_content("Prenons un moment pour discuter de la stratégie à adopter.")
     assert is_english == False
-    assert translated_content == "There are moments in life when it is important to pause and reflect on the choices we have made and the directions we want to take."
+    assert translated_content == "Let's take a moment to discuss the strategy to adopt."
 
 def test_llm_normal_response():
-    is_english, translated_content = translate_content("Hello, this is a normal message.")
+    is_english, translated_content = translate_content("This is a simple test message.")
     assert is_english == True
-    assert translated_content == "Hello, this is a normal message."
+    assert translated_content == "This is a simple test message."
 
 def test_llm_gibberish_response():
-    is_english, translated_content = translate_content("asdfghjkl")
+    is_english, translated_content = translate_content("qwertyuiop")
     assert is_english == True
-    assert translated_content == "asdfghjkl"
+    assert translated_content == "qwertyuiop"
