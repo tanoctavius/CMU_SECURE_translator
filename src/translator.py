@@ -13,7 +13,7 @@ client = AzureOpenAI(
 )
 
 def get_translation(post: str) -> str:
-    context = "You are a helpful assistant specialized in translating text. Translate the following text to English."
+    context = "Translate the following text to English. Imagine that you are a helpful assistant that translates non-English posts into English."
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -30,7 +30,7 @@ def get_translation(post: str) -> str:
     return response.choices[0].message.content
 
 def get_language(post: str) -> str:
-    context = "You are an assistant that identifies the language of the provided text. Specify the language of the following text. Answer in 1 word, with just the name of the language (use the English name)."
+    context = "You are a helpful assistant that classifies the language of the text. Give the response as a single English word of the language}." 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -49,24 +49,30 @@ def get_language(post: str) -> str:
 
 def translate_content(content: str) -> tuple[bool, str]:
     try:
+        # Detect the language of the content
         detected_language = get_language(content)
-
-        # Check if detected language is in the expected format (a single word)
-        if not isinstance(detected_language, str) or " " in detected_language.strip():
-            raise ValueError("Unexpected language output format: Expected a single word.")
+        _validate_detected_language(detected_language)
 
         if detected_language.lower() == "english":
-            return (True, content)
+            return True, content
 
+        # Translate content if not in English
         translated_text = get_translation(content)
+        _validate_translated_text(translated_text)
 
-        # Verify translation output format (should be a non-empty string)
-        if not isinstance(translated_text, str) or len(translated_text.strip()) == 0:
-            raise ValueError("Unexpected translation output format: Expected non-empty text.")
-
-        return (False, translated_text)
+        return False, translated_text
 
     except Exception as e:
-        # Log the error and respond with a safe fallback to avoid breaking NodeBB
-        print(f"Error in LLM response handling: {e}")
-        return (True, "Sorry, translation is temporarily unavailable.")
+        # Log the error and provide a fallback response
+        print(f"Error in translation service: {e}")
+        return True, "Sorry, translation is temporarily unavailable."
+
+def _validate_detected_language(detected_language: str) -> None:
+    #Validates the format of the detected language.
+    if not isinstance(detected_language, str) or " " in detected_language.strip():
+        raise ValueError("Unexpected language output format: Expected a single word.")
+
+def _validate_translated_text(translated_text: str) -> None:
+    #Validates the format of the translated text.
+    if not isinstance(translated_text, str) or not translated_text.strip():
+        raise ValueError("Unexpected translation output format: Expected non-empty text.")
